@@ -14,9 +14,9 @@ def findCountToEndOfAllies(location, d):
         max = gameMap.width
 
     # if we've already gone the max in this rowl/column before, return
-    if d == NORTH or d == SOUTH and location.y in maxedCols:
+    if (d == NORTH or d == SOUTH) and location.y in maxedCols:
         return max
-    if d == EAST or d == WEST and location.x in maxedRows:
+    if (d == EAST or d == WEST) and location.x in maxedRows:
         return max
 
     i = 0
@@ -45,6 +45,8 @@ def move(location):
             return Move(location, d)
         if neighbour_site.owner == myID:
             allies += 1
+    if allies < 4:
+        countCache[str(location)] = 0
     if site.strength < site.production * 5:
         return Move(location, STILL)
     if allies == 4:
