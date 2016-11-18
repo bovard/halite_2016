@@ -5,17 +5,34 @@ myID, gameMap = getInit()
 sendInit("bovard")
 
 countCache = {}
+maxedCols = []
+maxedRows = []
 
 def findCountToEndOfAllies(location, d):
     max = gameMap.height
     if d == EAST or d == WEST:
         max = gameMap.width
+
+    # if we've already gone the max in this rowl/column before, return
+    if d == NORTH or d == SOUTH and location.y in maxedCols:
+        return max
+    if d == EAST or d == WEST and location.x in maxedRows:
+        return max
+
     i = 0
     while i < max and gameMap.getSite(location, d).owner == myID:
         i += 1
         location = gameMap.getLocation(location, d)
         if countCache.get(str(location)):
             return i + countCache[str(location)]
+
+    # if we've gone the max, update
+    if i == max:
+        if d == NORTH or d == SOUTH:
+            maxedCols.append(location.y)
+        else:
+            maxedRows.append(location.x)
+
     return i
 
 
@@ -41,6 +58,8 @@ def move(location):
 while True:
     moves = []
     countCache = {}
+    maxedCols = []
+    maxedRows = []
     gameMap = getFrame()
 
     for y in range(gameMap.height):
